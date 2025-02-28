@@ -1,11 +1,11 @@
 export const metadate  = {
-  title: "Tickets",
+  title: "Tasks",
 }
 
 
 export default function Tickets() {
     return (
-      <div>Tickets page</div>
+      <div>Tasks page</div>
     )
   }
   

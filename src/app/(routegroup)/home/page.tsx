@@ -1,4 +1,4 @@
-export const metadate  = {
+export const metadate = {
   title: "Home",
 }
 
