@@ -18,9 +18,9 @@ export const studentProfiles = pgTable("student_profiles", {
   id: serial("id").primaryKey(),
   studentId: integer("student_id").references(() => users.id).notNull(),
   assignedTeacherId: integer("teacher_id").references(() => users.id).notNull(),
-  bio: text("bio"),
-  skills: text("skills"),
-  progress: text("progress").default("Not Started"), // Progress tracking
+  bio: text("bio").notNull(),
+  skills: text("skills").notNull(),
+  progress: text("progress").default("NS"), // Progress tracking
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -29,7 +29,8 @@ export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
-  status: text("status").default("Pending"),
+  tech: text('tech'),
+  status: text("status").default("NS"),
   deadline: timestamp("deadline").notNull(),
   studentId: integer("student_id").references(() => users.id).notNull(),
   teacherId: integer("teacher_id").references(() => users.id).notNull(),
