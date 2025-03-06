@@ -1,6 +1,6 @@
 "use server"
 
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import { flattenValidationErrors } from "next-safe-action"
 import { redirect } from "next/navigation"
 
@@ -25,7 +25,7 @@ export const saveStudentAction = actionClient
                 const isAuth = await isAuthenticated()
 
                 if(!isAuth) redirect('/login')
-
+                    
                 //New Student
                 if(student.id === 0){
                     const result = await db.insert(studentProfiles).values({

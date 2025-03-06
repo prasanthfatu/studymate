@@ -9,9 +9,17 @@ export const insertTaskSchema = createInsertSchema(tasks, {
     title: z.string().min(3, 'Title must be at least 3 characters'),
     description: z.string().max(1000, "Description must not exceed 1000 characters").optional(),
     status: z.enum(["NS", "IP", "C"]),
-    deadline: z.string().datetime().refine((date) => new Date(date) > new Date(), {
-        message: "Deadline must be in the future"
-    })
+    // deadline: z.string().datetime().refine((date) => new Date(date) > new Date(), {
+    //     message: "Deadline must be in the future"
+    // })
+    // Validate deadline in DD-MM-YYYY format
+    deadline: z.string()
+        .regex(/^\d{2}-\d{2}-\d{4}$/, "Deadline must be in DD-MM-YYYY format")
+        .refine((date) => {
+            const [day, month, year] = date.split("-").map(Number);
+            const parsedDate = new Date(year, month - 1, day); // Month is 0-based
+            return parsedDate > new Date();
+        }, { message: "Deadline must be in the future" })
 })
 
 export const selectTaskSchema = createSelectSchema(tasks)

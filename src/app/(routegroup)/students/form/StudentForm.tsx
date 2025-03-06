@@ -18,6 +18,8 @@ import { useAction } from 'next-safe-action/hooks'
 import { saveStudentAction } from "@/app/actions/saveStudentAction"
 
 import { toast } from "sonner"
+import { LoaderCircle } from "lucide-react"
+import { DisplayServerActionResponse } from "@/components/DisplayServerActionResponse"
 
 type Props = {
     student?: selectStudentSchemaType,
@@ -44,30 +46,30 @@ export default function StudentForm({student}: Props){
     const {
         execute: executeSave,
         result: saveResult,
-        isExecuting: isSaving,
+        isPending: isSaving,
         reset: resetSaveAction
     } = useAction(saveStudentAction, {
         onSuccess({data}){
-            toast({
-                variant: 'default',
-                title: 'Success! 🎉',
-                description: data?.message,
+            if(data?.message){
+            toast.message('Success! 🎉', {
+                description: data?.message ?? 'Student saved successfully!',
             })
+        }
         },
         onError({error}){
-            toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'Save Failed'
-            })
+            toast.error('Error', {
+                description: 'Save Failed',
+            });
         }
     })
 
     async function SubmitForm(data: insertStudentSchemaType){
-        console.log(data)
+        // console.log(data)
+        executeSave(data)
     }
     return(
         <div className="flex flex-col gap-1 sm:px-8">
+            <DisplayServerActionResponse result={saveResult} />
             <div>
                 <h2 className="text-2xl font-bold">
                     {student?.id ? "Edit" : "New"} Student Form
@@ -109,14 +111,22 @@ export default function StudentForm({student}: Props){
                                 className="w-3/4"
                                 variant='default'
                                 title="Save"
+                                disabled={isSaving}
                             >
-                                Save
+                                {isSaving ? (
+                                    <>
+                                        <LoaderCircle className="animate-spin" />Saving
+                                    </>
+                                ) : "Save"}
                             </Button>
                             <Button
                                 type="button"
                                 variant='destructive'
                                 title="Reset"
-                                onClick={() => form.reset(defaultValues)}
+                                onClick={() => {
+                                    form.reset(defaultValues)
+                                    resetSaveAction()
+                                }}
                             >
                                 Reset
                             </Button>

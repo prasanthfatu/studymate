@@ -9,7 +9,7 @@ export const actionClient = createSafeActionClient({
     },
     handleServerError(e, utils) {
         const { clientInput, metadata } = utils
-        if(e.constructor.name === 'DatabaseError'){
+        if(e.constructor.name === 'NeonDbError'){
             return 'Database Error: Your data did not save. Support will be notified.'
         }
         return e.message

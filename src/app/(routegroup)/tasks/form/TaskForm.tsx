@@ -12,6 +12,12 @@ import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
 import { SelectWithLabel } from "@/components/inputs/SelectWithLabel";
 import { ProgressArray } from "@/constants/ProgressArray";
 
+import { useAction } from "next-safe-action/hooks";
+import { toast } from "sonner";
+import { LucideCircle } from "lucide-react";
+import { saveTaskAction } from "@/app/actions/saveTaskAction";
+import { DisplayServerActionResponse } from "@/components/DisplayServerActionResponse";
+
 type Props = {
     student: selectStudentSchemaType,
     task? : selectTaskSchemaType,
@@ -41,11 +47,34 @@ export default function TaskForm({student, task, techs, isEditable = true }: Pro
         resolver: zodResolver(insertTaskSchema),
         defaultValues,
     })
+
+    const {
+        execute: executeSave,
+        result: saveResult,
+        isPending: isSaving,
+        reset: resetSaveAction
+    } = useAction(saveTaskAction, {
+        onSuccess({data}) {
+            if(data?.message) {
+            toast.success('Success🎉', {
+                description: data?.message ?? 'Task saved Successfully'
+            })
+        }
+        },
+        onError({error}) {
+            toast.error('Error🤢', {
+                description: 'Save Failed'
+            })
+        }
+    })
+
     async function SubmitForm(data: insertTaskSchemaType){
-        console.log(data);        
+        // console.log(data);        
+        executeSave(data)
     }
     return(
         <div className="flex flex-col gap-1 sm: px-8">
+            <DisplayServerActionResponse result={saveResult} />
             <div>
                 <h2 className="text-2xl font-bold">
                     {task?.id && isEditable ?
@@ -132,14 +161,22 @@ export default function TaskForm({student, task, techs, isEditable = true }: Pro
                                             className="w-3/4"
                                             variant='default'
                                             title="Save"
+                                            disabled={isSaving}
                                         >
-                                            Save
+                                           {isSaving ? (
+                                            <>
+                                                <LucideCircle className="animate-spin" />Saving
+                                            </>
+                                           ): 'Save'}
                                         </Button>
                                         <Button
                                             type="button"
                                             variant='destructive'
                                             title="Reset"
-                                            onClick={() => form.reset(defaultValues)}
+                                            onClick={() => {
+                                                form.reset(defaultValues)
+                                                resetSaveAction()
+                                            }}
                                         >
                                             Reset
                                         </Button>

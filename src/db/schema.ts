@@ -1,4 +1,4 @@
-import { pgTable, serial, text, pgEnum, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, pgEnum, timestamp, integer, date } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 //Define role types
@@ -31,7 +31,7 @@ export const tasks = pgTable("tasks", {
   description: text("description"),
   tech: text('tech'),
   status: text("status").default("NS"),
-  deadline: timestamp("deadline").notNull(),
+  deadline: date("deadline", { mode: "string" }).notNull(),
   studentId: integer("student_id").references(() => users.id).notNull(),
   teacherId: integer("teacher_id").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
