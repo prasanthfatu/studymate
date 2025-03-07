@@ -1,11 +1,11 @@
 import { TaskSearch } from "@/app/(routegroup)/tasks/TaskSearch"
 import { getOpenTasks } from "@/lib/queries/getOpenTasks"
 import { getTaskSearchResults } from "@/lib/queries/getTaskSearchResults"
+import TaskTable from "@/app/(routegroup)/tasks/TaskTable"
 
 export const metadate  = {
   title: "Task Search",
 }
-
 
 export default async function Tickets({
   searchParams
@@ -18,7 +18,7 @@ export default async function Tickets({
         return(
           <>
             <TaskSearch />
-            <p>{JSON.stringify(results)}</p>
+            {results.length ? <TaskTable data={results} /> : null}
           </>
         )
       }
@@ -29,7 +29,7 @@ export default async function Tickets({
       return(
         <>
           <TaskSearch />
-          <p>{JSON.stringify(results)}</p>
+          {results.length ? <TaskTable data={results} /> : null}
         </>
       )
   }

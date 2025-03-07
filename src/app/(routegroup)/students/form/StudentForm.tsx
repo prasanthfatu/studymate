@@ -29,13 +29,17 @@ export default function StudentForm({student}: Props){
     const { getPermission, isLoading } = useKindeBrowserClient()
     const isTeacher = !isLoading && getPermission('teacher')?.isGranted
 
+    const isValidProgress = (value: any): value is "NS" | "IP" | "C" => {
+        return ["NS", "IP", "C"].includes(value);
+    };    
+
     const defaultValues: insertStudentSchemaType = {
         id: student?.id ?? Number(0),
         studentId: student?.studentId ?? Number(0),
         assignedTeacherId: student?.assignedTeacherId ?? Number(0),
         bio: student?.bio ?? '',
         skills: student?.skills ?? '',
-        progress: student?.progress ?? 'NS'
+        progress: isValidProgress(student?.progress) ? student.progress : "NS"
     }
     const form = useForm<insertStudentSchemaType>({
         mode: 'onBlur',

@@ -12,6 +12,6 @@ export const insertStudentSchema = createInsertSchema(studentProfiles, {
 
 export const selectStudentSchema = createSelectSchema(studentProfiles)
 
-export const insertStudentSchemaType = typeof insertStudentSchema._type
+export type insertStudentSchemaType = typeof insertStudentSchema._type
 
-export const selectStudentSchemaType = typeof selectStudentSchema._type
+export  type selectStudentSchemaType = typeof selectStudentSchema._type

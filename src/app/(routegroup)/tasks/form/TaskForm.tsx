@@ -32,11 +32,15 @@ export default function TaskForm({student, task, techs, isEditable = true }: Pro
 
     const isTeacher = Array.isArray(techs)    
 
+    const isValidStatus = (value: any): value is "NS" | "IP" | "C" => {
+        return ["NS", "IP", "C"].includes(value)
+    }
+
     const defaultValues: insertTaskSchemaType = {
         id: task?.id ?? "(New)",
         title: task?.title ?? '',
         description: task?.description ?? '',
-        status: task?.status ?? 'NS',
+        status: isValidStatus(task?.status) ? task.status: "NS",
         deadline: task?.deadline ?? '',
         studentId: task?.studentId ?? student.studentId,
         teacherId: task?.teacherId ?? student.assignedTeacherId,
